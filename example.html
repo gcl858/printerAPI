@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printer Library Example</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1>Printer Library Demo</h1>
+    <p>Click the button below to simulate the printer process.</p>
+    <button id="startPrintProcess" class="btn btn-primary">Start Print Process</button>
+    <div class="mt-3">
+        <strong>Process Result:</strong> <span id="processResult">-</span>
+    </div>
+</div>
+
+<!-- Include the printer modal structure -->
+<!-- In a real application, this might be dynamically added or already part of a base template -->
+<div id="modalPlaceholder"></div>
+
+
+<!-- Bootstrap JS Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Printer Library -->
+<script src="printerLib.js"></script>
+
+<script>
+    // Load the modal HTML into the placeholder
+    fetch('index.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('modalPlaceholder').innerHTML = data;
+        })
+        .catch(error => console.error('Error loading modal HTML:', error));
+
+
+    document.getElementById('startPrintProcess').addEventListener('click', async () => {
+        const systemName = "Demo System";
+        const displayMessage = "Processing your important document. Please wait...";
+        const apiKey = "YOUR_API_KEY_HERE"; // Replace with a valid or test API key
+        const printContent = "Hello, this is a test print!\nLine 2\nLine3";
+
+        // Update UI
+        document.getElementById('processResult').textContent = "Processing...";
+
+        try {
+            // Call the library function
+            const success = await handlePrintProcess(systemName, displayMessage, apiKey, printContent);
+
+            // Display result
+            document.getElementById('processResult').textContent = success ? "Success" : "Failed (or user ended process)";
+            console.log("handlePrintProcess result:", success);
+
+        } catch (error) {
+            console.error("Error calling handlePrintProcess:", error);
+            document.getElementById('processResult').textContent = "Library Error";
+        }
+    });
+</script>
+
+</body>
+</html>
+```
