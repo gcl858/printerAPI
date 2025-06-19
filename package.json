@@ -1,0 +1,47 @@
+{
+  "name": "printer-api-controller",
+  "version": "1.0.0",
+  "description": "通用的印字機API控制庫，提供統一的印字機操作介面與現代化UI",
+  "main": "printer-api.js",
+  "keywords": [
+    "printer",
+    "api",
+    "javascript",
+    "bootstrap",
+    "ui",
+    "印字機",
+    "控制庫"
+  ],
+  "author": "Your Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/printer-api-controller.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/printer-api-controller/issues"
+  },
+  "homepage": "https://github.com/your-username/printer-api-controller#readme",
+  "scripts": {
+    "start": "npx http-server . -p 8080 -o",
+    "build": "echo 'No build process required for vanilla JavaScript library'",
+    "test": "echo 'Tests not yet implemented'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "files": [
+    "printer-api.js",
+    "index.html",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

@@ -1,0 +1,142 @@
+/* 印字機API控制庫 - 額外樣式 */
+
+/* Modal 自訂樣式 */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 15px 15px;
+}
+
+/* 步驟列表樣式 */
+.list-group-item {
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.list-group-item.active {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* 進度條動畫 */
+.progress {
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+    border-radius: 10px;
+}
+
+/* 圖標動畫 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* 按鈕樣式 */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* 警告框樣式 */
+.alert {
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.alert-info {
+    background: linear-gradient(45deg, #d1ecf1, #bee5eb);
+    color: #0c5460;
+}
+
+.alert-danger {
+    background: linear-gradient(45deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+}
+
+.alert-success {
+    background: linear-gradient(45deg, #d4edda, #c3e6cb);
+    color: #155724;
+}
+
+/* 徽章樣式 */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .modal-lg {
+        max-width: calc(100vw - 2rem);
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .modal-header {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .modal-footer {
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .list-group-item {
+        background-color: #4a5568;
+        border-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .list-group-item.active {
+        background-color: #2b6cb0;
+        border-color: #3182ce;
+    }
+    
+    .progress {
+        background-color: #4a5568;
+    }
+}
