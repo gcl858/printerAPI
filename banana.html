@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍌 Banana - 圖片生成工具</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'>🍌</svg>">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --accent-primary: #f59e0b;
+            --accent-secondary: #ef4444;
+            --border-radius: 12px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1e293b 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .main-header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .title-gradient {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .card-custom {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .upload-zone {
+            border: 2px dashed #64748b;
+            border-radius: var(--border-radius);
+            background: var(--bg-card);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 200px;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: var(--accent-primary);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            min-height: 400px;
+        }
+
+        .result-container img {
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner-border-custom {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-width: 2px;
+        }
+
+        .alert-custom {
+            border: none;
+            border-radius: var(--border-radius);
+            border-left: 4px solid;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-control,
+        .form-select {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            border-radius: 8px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            background: var(--bg-card);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .progress-custom {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .progress-bar-custom {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header py-3 mb-4">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h1 class="title-gradient mb-0 fs-2">🍌 Banana</h1>
+                    <p class="text-muted mb-0">AI 圖片生成工具</p>
+                </div>
+                <div class="col-auto">
+                    <span class="badge bg-success">
+                        <i class="bi bi-robot"></i> Gemini 2.5 Flash
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- Controls Panel -->
+            <div class="col-lg-6">
+                <div class="card card-custom h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-sliders text-warning"></i> 
+                            控制面板
+                        </h5>
+
+                        <!-- Upload Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-image"></i> 上傳圖片
+                            </label>
+                            <div class="upload-zone d-flex flex-column justify-content-center align-items-center p-4" id="upload-zone">
+                                <input type="file" id="image-upload" accept="image/*" class="d-none">
+                                <div id="upload-content">
+                                    <i class="bi bi-cloud-upload fs-1 text-muted mb-3"></i>
+                                    <p class="mb-2 fw-semibold">點擊或拖拽上傳圖片</p>
+                                    <p class="text-muted small mb-0">支援 JPG, PNG, GIF 格式</p>
+                                </div>
+                                <div id="preview-container" class="d-none">
+                                    <img id="preview-image" class="preview-image mb-2" alt="預覽圖片">
+                                    <p class="text-success small mb-0">
+                                        <i class="bi bi-check-circle"></i> 圖片已上傳
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <div class="d-grid">
+                            <button class="btn btn-generate btn-lg" id="generate-btn">
+                                <span class="btn-text">
+                                    <i class="bi bi-magic"></i> 
+                                    自動生成圖片
+                                </span>
+                                <span class="spinner-border spinner-border-custom d-none" id="loading-spinner"></span>
+                            </button>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="progress progress-custom mt-3 d-none" id="progress-container">
+                            <div class="progress-bar progress-bar-custom" id="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Panel -->
+            <div class="col-lg-6">
+                <div class="card card-custom h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="bi bi-palette text-warning"></i> 
+                            生成結果
+                        </h5>
+                        
+                        <div class="result-container d-flex justify-content-center align-items-center p-4" id="result-container">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-image fs-1 mb-3 d-block"></i>
+                                <p class="mb-0">生成的圖片將顯示在這裡</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alert-container" class="mt-4"></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        class BananaApp {
+            constructor() {
+                this.selectedFile = null;
+                this.apiKey = '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';
+                this.defaultPrompt = `根據以下主題/場景/限制的描述,一定確實地幫我輸出圖片,不要回覆文字內容
+主題:生日
+場景:
+1.超寫實的1/6比例主體，其姿勢和近距離物品與原圖一致，最終被設計成成品，擺放在電腦桌上。
+2.主體立於一個乾淨、圓形、透明的壓克力底座上，底座上沒有任何標籤或文字。專業的工作室燈光突顯了雕塑的細節。
+3.背景中的iMac螢幕顯示著主體人偶的ZBrush建模過程，不填色以凸顯了「進行中」與成品之間的對比。
+4.人偶旁邊是一個包裝盒，帶有透明窗口，並貼有符合主題名稱的中文繁體字貼紙。盒子頂部敞開，僅露出一個透明的塑膠蓋。盒子的高度略高於人偶本身，但尺寸與模型的實際尺寸相符。
+限制:
+周圍佈置上相當豐富符合主題的裝飾物品`;
+                this.initializeElements();
+                this.initializeEventListeners();
+            }
+
+            initializeElements() {
+                this.uploadZone = document.getElementById('upload-zone');
+                this.fileInput = document.getElementById('image-upload');
+                this.uploadContent = document.getElementById('upload-content');
+                this.previewContainer = document.getElementById('preview-container');
+                this.previewImage = document.getElementById('preview-image');
+                this.generateBtn = document.getElementById('generate-btn');
+                this.btnText = this.generateBtn.querySelector('.btn-text');
+                this.loadingSpinner = document.getElementById('loading-spinner');
+                this.resultContainer = document.getElementById('result-container');
+                this.progressContainer = document.getElementById('progress-container');
+                this.progressBar = document.getElementById('progress-bar');
+                this.alertContainer = document.getElementById('alert-container');
+            }
+
+            initializeEventListeners() {
+                // 檔案上傳相關事件
+                this.uploadZone.addEventListener('click', () => {
+                    this.fileInput.click();
+                });
+
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    this.uploadZone.addEventListener(eventName, this.preventDefaults.bind(this), false);
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    this.uploadZone.addEventListener(eventName, () => {
+                        this.uploadZone.classList.add('drag-over');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    this.uploadZone.addEventListener(eventName, () => {
+                        this.uploadZone.classList.remove('drag-over');
+                    });
+                });
+
+                this.uploadZone.addEventListener('drop', (e) => {
+                    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+                    if (files.length > 0) {
+                        this.handleFile(files[0]);
+                    }
+                });
+
+                this.fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        this.handleFile(e.target.files[0]);
+                    }
+                });
+
+                // 生成按鈕事件
+                this.generateBtn.addEventListener('click', this.handleGenerate.bind(this));
+            }
+
+            preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            handleFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    this.showAlert('請選擇有效的圖片檔案', 'warning');
+                    return;
+                }
+
+                this.selectedFile = file;
+                this.createPreview(file);
+            }
+
+            createPreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.previewImage.src = e.target.result;
+                    this.uploadContent.classList.add('d-none');
+                    this.previewContainer.classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            async handleGenerate() {
+                if (!this.selectedFile) {
+                    this.showAlert('請先上傳一張圖片', 'warning');
+                    return;
+                }
+
+                this.setLoading(true);
+                this.clearAlerts();
+                this.updateProgress(10);
+
+                try {
+                    // 準備圖片數據
+                    this.updateProgress(30);
+                    const base64Image = await this.fileToBase64(this.selectedFile);
+
+                    // 構建訊息
+                    this.updateProgress(50);
+                    const messages = this.buildMessages(this.defaultPrompt, base64Image);
+
+                    // 調用 OpenRouter API
+                    this.updateProgress(70);
+                    const result = await this.callOpenRouter(messages);
+
+                    // 顯示結果
+                    this.updateProgress(90);
+                    if (result.type === 'image') {
+                        this.displayImage(result.content);
+                        this.showAlert('圖片生成成功！', 'success');
+                    } else {
+                        this.displayText(result.content);
+                        this.showAlert('已生成文字回應', 'info');
+                    }
+
+                    this.updateProgress(100);
+
+                } catch (error) {
+                    console.error('生成失敗:', error);
+                    this.showAlert(`生成失敗: ${error.message}`, 'danger');
+                } finally {
+                    setTimeout(() => {
+                        this.setLoading(false);
+                        this.hideProgress();
+                    }, 500);
+                }
+            }
+
+            buildMessages(prompt, base64Image) {
+                const content = [
+                    { type: "text", text: prompt },
+                    { type: "image_url", image_url: { url: base64Image } }
+                ];
+
+                return [{ role: "user", content }];
+            }
+
+            async callOpenRouter(messages) {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${this.apiKey}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": window.location.origin,
+                        "X-Title": "Banana Image Generator"
+                    },
+                    body: JSON.stringify({
+                        model: "google/gemini-2.5-flash-image-preview",
+                        messages: messages,
+                        max_tokens: 1000
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API 錯誤: ${response.status} ${response.statusText}`);
+                }
+
+                const responseData = await response.json();
+                console.log('OpenRouter Response:', responseData);
+
+                const message = responseData.choices?.[0]?.message;
+
+                // 檢查圖片回應
+                if (message?.images?.[0]?.image_url?.url) {
+                    return { type: 'image', content: message.images[0].image_url.url };
+                }
+
+                if (typeof message?.content === 'string' && message.content.startsWith('data:image/')) {
+                    return { type: 'image', content: message.content };
+                }
+
+                // 檢查文字回應
+                if (typeof message?.content === 'string' && message.content.trim() !== '') {
+                    return { type: 'text', content: message.content };
+                }
+
+                return { type: 'text', content: "[模型沒有返回有效內容]" };
+            }
+
+            fileToBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            setLoading(isLoading) {
+                this.generateBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.btnText.classList.add('d-none');
+                    this.loadingSpinner.classList.remove('d-none');
+                    this.showProgress();
+                } else {
+                    this.btnText.classList.remove('d-none');
+                    this.loadingSpinner.classList.add('d-none');
+                }
+            }
+
+            showProgress() {
+                this.progressContainer.classList.remove('d-none');
+            }
+
+            hideProgress() {
+                this.progressContainer.classList.add('d-none');
+                this.updateProgress(0);
+            }
+
+            updateProgress(percent) {
+                this.progressBar.style.width = `${percent}%`;
+            }
+
+            displayImage(imageUrl) {
+                this.resultContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = '生成的圖片';
+                img.className = 'img-fluid';
+                img.style.cssText = 'max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); cursor: pointer;';
+                
+                // 添加點擊下載功能
+                img.addEventListener('click', () => {
+                    this.downloadImage(imageUrl);
+                });
+                
+                // 添加提示文字
+                const downloadHint = document.createElement('p');
+                downloadHint.className = 'text-center text-muted small mt-2 mb-0';
+                downloadHint.innerHTML = '<i class="bi bi-download"></i> 點擊圖片即可下載';
+                
+                img.onload = () => {
+                    this.resultContainer.appendChild(img);
+                    this.resultContainer.appendChild(downloadHint);
+                };
+                
+                img.onerror = () => {
+                    this.resultContainer.innerHTML = `
+                        <div class="text-center text-danger">
+                            <i class="bi bi-exclamation-triangle fs-1 mb-3 d-block"></i>
+                            <p class="mb-0">圖片載入失敗</p>
+                        </div>
+                    `;
+                };
+            }
+
+            displayText(text) {
+                this.resultContainer.innerHTML = `
+                    <div class="w-100">
+                        <div class="alert alert-info border-0">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-info-circle"></i> 回應內容
+                            </h6>
+                            <p class="mb-0" style="white-space: pre-wrap; word-break: break-word;">${text}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            showAlert(message, type = 'info') {
+                const alertId = 'alert-' + Date.now();
+                const alertHTML = `
+                    <div id="${alertId}" class="alert alert-${type} alert-custom alert-dismissible fade show" role="alert">
+                        <i class="bi bi-${this.getAlertIcon(type)}"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                this.alertContainer.innerHTML = alertHTML;
+                
+                // 自動移除 alert
+                setTimeout(() => {
+                    const alertElement = document.getElementById(alertId);
+                    if (alertElement) {
+                        const alert = new bootstrap.Alert(alertElement);
+                        alert.close();
+                    }
+                }, 5000);
+            }
+
+            getAlertIcon(type) {
+                const icons = {
+                    success: 'check-circle',
+                    danger: 'exclamation-triangle',
+                    warning: 'exclamation-triangle',
+                    info: 'info-circle'
+                };
+                return icons[type] || 'info-circle';
+            }
+
+            clearAlerts() {
+                this.alertContainer.innerHTML = '';
+            }
+
+            async downloadImage(imageUrl) {
+                try {
+                    this.showAlert('正在準備下載...', 'info');
+                    
+                    // 如果是 data URL，直接下載
+                    if (imageUrl.startsWith('data:')) {
+                        this.downloadDataUrl(imageUrl);
+                        return;
+                    }
+                    
+                    // 如果是外部 URL，需要先獲取圖片數據
+                    const response = await fetch(imageUrl);
+                    if (!response.ok) {
+                        throw new Error('無法獲取圖片數據');
+                    }
+                    
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    
+                    // 創建下載連結
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `banana-generated-${Date.now()}.png`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // 清理 URL
+                    window.URL.revokeObjectURL(url);
+                    
+                    this.showAlert('圖片下載成功！', 'success');
+                    
+                } catch (error) {
+                    console.error('下載失敗:', error);
+                    this.showAlert('下載失敗，請稍後再試', 'danger');
+                }
+            }
+
+            downloadDataUrl(dataUrl) {
+                // 從 data URL 獲取檔案類型
+                const mimeMatch = dataUrl.match(/data:([^;]+);/);
+                const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
+                const extension = mimeType.split('/')[1] || 'png';
+                
+                // 創建下載連結
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `banana-generated-${Date.now()}.${extension}`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                this.showAlert('圖片下載成功！', 'success');
+            }
+        }
+
+        // 初始化應用
+        document.addEventListener('DOMContentLoaded', () => {
+            new BananaApp();
+        });
+
+        // 全域錯誤處理
+        window.addEventListener('error', (e) => {
+            console.error('全域錯誤:', e.error);
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('未處理的 Promise 拒絕:', e.reason);
+        });
+    </script>
+</body>
+</html>
