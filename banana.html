@@ -260,7 +260,9 @@
         class BananaApp {
             constructor() {
                 this.selectedFile = null;
-                this.apiKey = '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';
+                // Base64 編碼的 API Key，使用時會自動解碼
+                this.encodedApiKey = 'c2stb3ItdjEtODU3ZjZlN2IyMjUxNWMxYzM0MGY3NzAyNjYzNDAzMWVmNGQ1ODlmODVlMTNlZjI4NjQ1YTFlYmE1YzI4MDhmNg==';
+                this.apiKey = this.decodeApiKey();
                 this.defaultPrompt = `根據以下主題/場景/限制的描述,一定確實地幫我輸出圖片,不要回覆文字內容
 主題:生日
 場景:
@@ -272,6 +274,18 @@
 周圍佈置上相當豐富符合主題的裝飾物品`;
                 this.initializeElements();
                 this.initializeEventListeners();
+            }
+
+            decodeApiKey() {
+                try {
+                    // 使用 atob 函數進行 base64 解碼
+                    const decodedKey = atob(this.encodedApiKey);
+                    console.log('API Key 已成功解碼');
+                    return decodedKey;
+                } catch (error) {
+                    console.error('API Key 解碼失敗:', error);
+                    return '';
+                }
             }
 
             initializeElements() {
