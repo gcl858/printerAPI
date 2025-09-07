@@ -14,28 +14,29 @@
     
     <style>
         :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --accent-primary: #f59e0b;
-            --accent-secondary: #ef4444;
-            --border-radius: 12px;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --border-radius: 16px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             color: var(--text-primary);
             min-height: 100vh;
         }
 
         .main-header {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }
 
         .title-gradient {
@@ -47,17 +48,17 @@
         }
 
         .card-custom {
-            background: var(--bg-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
         }
 
         .upload-zone {
-            border: 2px dashed #64748b;
+            border: 2px dashed #cbd5e1;
             border-radius: var(--border-radius);
-            background: var(--bg-card);
+            background: var(--bg-secondary);
             transition: all 0.3s ease;
             cursor: pointer;
             min-height: 200px;
@@ -66,7 +67,7 @@
         .upload-zone:hover,
         .upload-zone.drag-over {
             border-color: var(--accent-primary);
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(59, 130, 246, 0.05);
         }
 
         .btn-generate {
@@ -82,7 +83,7 @@
 
         .btn-generate:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.3);
         }
 
         .btn-generate:disabled {
@@ -99,7 +100,7 @@
 
         .result-container img {
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .spinner-border-custom {
@@ -118,13 +119,13 @@
             max-width: 100%;
             max-height: 150px;
             border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
         .form-control,
         .form-select {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.15);
             color: var(--text-primary);
             border-radius: 8px;
         }
@@ -134,7 +135,7 @@
             background: var(--bg-card);
             border-color: var(--accent-primary);
             color: var(--text-primary);
-            box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
         }
 
         .form-control::placeholder {
@@ -143,7 +144,7 @@
 
         .progress-custom {
             height: 6px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
             border-radius: 3px;
         }
 
@@ -166,8 +167,8 @@
             <div class="row mt-3">
                 <div class="col">
                     <div class="mb-2">
-                        <label for="theme-input" class="form-label fw-semibold text-white">
-                            <i class="bi bi-lightbulb text-warning"></i> 主題
+                        <label for="theme-input" class="form-label fw-semibold text-dark">
+                            <i class="bi bi-lightbulb text-primary"></i> 主題
                         </label>
                         <input type="text" class="form-control" id="theme-input" 
                                placeholder="請輸入主題..." 
@@ -193,7 +194,7 @@
                         <!-- Upload Section -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold">
-                                <i class="bi bi-image"></i> 上傳圖片
+                                <i class="bi bi-image text-primary"></i> 上傳圖片
                             </label>
                             <div class="upload-zone d-flex flex-column justify-content-center align-items-center p-4" id="upload-zone">
                                 <input type="file" id="image-upload" accept="image/*" class="d-none">
@@ -235,7 +236,7 @@
                 <div class="card card-custom h-100">
                     <div class="card-body">
                         <h5 class="card-title mb-4">
-                            <i class="bi bi-palette text-warning"></i> 
+                            <i class="bi bi-palette text-primary"></i> 
                             生成結果
                         </h5>
                         
