@@ -161,17 +161,18 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="main-header py-3 mb-4">
-        <div class="container-fluid">
-            <div class="row align-items-center">
+    <header class="main-header">        
+            <!-- 主題輸入區塊 -->
+            <div class="row mt-3">
                 <div class="col">
-                    <h1 class="title-gradient mb-0 fs-2">🍌 Banana</h1>
-                    <p class="text-muted mb-0">AI 圖片生成工具</p>
-                </div>
-                <div class="col-auto">
-                    <span class="badge bg-success">
-                        <i class="bi bi-robot"></i> Gemini 2.5 Flash
-                    </span>
+                    <div class="mb-2">
+                        <label for="theme-input" class="form-label fw-semibold text-white">
+                            <i class="bi bi-lightbulb text-warning"></i> 主題
+                        </label>
+                        <input type="text" class="form-control" id="theme-input" 
+                               placeholder="請輸入主題..." 
+                               value="謝謝金主姊姊">
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,10 +185,10 @@
             <div class="col-lg-6">
                 <div class="card card-custom h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-4">
+                        <!-- <h5 class="card-title mb-4">
                             <i class="bi bi-sliders text-warning"></i> 
                             控制面板
-                        </h5>
+                        </h5> -->
 
                         <!-- Upload Section -->
                         <div class="mb-4">
@@ -301,6 +302,7 @@
                 this.progressContainer = document.getElementById('progress-container');
                 this.progressBar = document.getElementById('progress-bar');
                 this.alertContainer = document.getElementById('alert-container');
+                this.themeInput = document.getElementById('theme-input');
             }
 
             initializeEventListeners() {
@@ -373,6 +375,9 @@
                     return;
                 }
 
+                // 獲取主題輸入
+                const theme = this.themeInput.value.trim() || '謝謝金主姊姊';
+                
                 this.setLoading(true);
                 this.clearAlerts();
                 this.updateProgress(10);
@@ -382,9 +387,10 @@
                     this.updateProgress(30);
                     const base64Image = await this.fileToBase64(this.selectedFile);
 
-                    // 構建訊息
+                    // 構建包含主題的提示詞
                     this.updateProgress(50);
-                    const messages = this.buildMessages(this.defaultPrompt, base64Image);
+                    const customPrompt = this.buildPromptWithTheme(theme);
+                    const messages = this.buildMessages(customPrompt, base64Image);
 
                     // 調用 OpenRouter API
                     this.updateProgress(70);
@@ -420,6 +426,18 @@
                 ];
 
                 return [{ role: "user", content }];
+            }
+
+            buildPromptWithTheme(theme) {
+                return `根據以下主題/場景/限制的描述,一定確實地幫我輸出圖片,不要回覆文字內容
+主題:${theme}
+場景:
+1.超寫實的1/6比例主體，其姿勢和近距離物品與原圖一致，最終被設計成成品，擺放在電腦桌上。
+2.主體立於一個乾淨、圓形、透明的壓克力底座上，底座上沒有任何標籤或文字。專業的工作室燈光突顯了雕塑的細節。
+3.背景中的iMac螢幕顯示著主體人偶的ZBrush建模過程，不填色以凸顯了「進行中」與成品之間的對比。
+4.人偶旁邊是一個包裝盒，帶有透明窗口，並貼有符合主題名稱的中文繁體字貼紙。盒子頂部敞開，僅露出一個透明的塑膠蓋。盒子的高度略高於人偶本身，但尺寸與模型的實際尺寸相符。
+限制:
+周圍佈置上相當豐富符合主題的裝飾物品`;
             }
 
             async callOpenRouter(messages) {
@@ -520,6 +538,9 @@
                 img.onload = () => {
                     this.resultContainer.appendChild(img);
                     this.resultContainer.appendChild(downloadHint);
+                    
+                    // 自動滾動到結果區塊
+                    this.scrollToResult();
                 };
                 
                 img.onerror = () => {
@@ -543,6 +564,9 @@
                         </div>
                     </div>
                 `;
+                
+                // 自動滾動到結果區塊
+                this.scrollToResult();
             }
 
             showAlert(message, type = 'info') {
@@ -634,6 +658,14 @@
                 document.body.removeChild(link);
                 
                 this.showAlert('圖片下載成功！', 'success');
+            }
+
+            scrollToResult() {
+                // 平滑滾動到結果區塊
+                this.resultContainer.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
             }
         }
 
