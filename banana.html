@@ -264,16 +264,7 @@
                 this.selectedFile = null;
                 // Base64 編碼的 API Key，使用時會自動解碼
                 this.encodedApiKey = 'c2stb3ItdjEtODU3ZjZlN2IyMjUxNWMxYzM0MGY3NzAyNjYzNDAzMWVmNGQ1ODlmODVlMTNlZjI4NjQ1YTFlYmE1YzI4MDhmNg==';
-                this.apiKey = this.decodeApiKey();
-                this.defaultPrompt = `根據以下主題/場景/限制的描述,一定確實地幫我輸出圖片,不要回覆文字內容
-主題:生日
-場景:
-1.超寫實的1/6比例主體，其姿勢和近距離物品與原圖一致，最終被設計成成品，擺放在電腦桌上。
-2.主體立於一個乾淨、圓形、透明的壓克力底座上，底座上沒有任何標籤或文字。專業的工作室燈光突顯了雕塑的細節。
-3.背景中的iMac螢幕顯示著主體人偶的ZBrush建模過程，不填色以凸顯了「進行中」與成品之間的對比。
-4.人偶旁邊是一個包裝盒，帶有透明窗口，並貼有符合主題名稱的中文繁體字貼紙。盒子頂部敞開，僅露出一個透明的塑膠蓋。盒子的高度略高於人偶本身，但尺寸與模型的實際尺寸相符。
-限制:
-周圍佈置上相當豐富符合主題的裝飾物品`;
+                this.apiKey = this.decodeApiKey();                
                 this.initializeElements();
                 this.initializeEventListeners();
             }
@@ -433,7 +424,7 @@
                 return `根據以下主題/場景/限制的描述,一定確實地幫我輸出圖片,不要回覆文字內容
 主題:${theme}
 場景:
-1.超寫實的1/6比例主體，其姿勢和近距離物品與原圖一致，最終被設計成成品，擺放在電腦桌上。
+1.原圖中所有人物都一定必須以超寫實的1/6比例成為主體，其姿勢和近距離物品與原圖一致，最終被設計成成品，擺放在電腦桌上。
 2.主體立於一個乾淨、圓形、透明的壓克力底座上，底座上沒有任何標籤或文字。專業的工作室燈光突顯了雕塑的細節。
 3.背景中的iMac螢幕顯示著主體人偶的ZBrush建模過程，不填色以凸顯了「進行中」與成品之間的對比。
 4.人偶旁邊是一個包裝盒，帶有透明窗口，並貼有符合主題名稱的中文繁體字貼紙。盒子頂部敞開，僅露出一個透明的塑膠蓋。盒子的高度略高於人偶本身，但尺寸與模型的實際尺寸相符。
@@ -453,7 +444,8 @@
                     body: JSON.stringify({
                         model: "google/gemini-2.5-flash-image-preview",
                         messages: messages,
-                        max_tokens: 1000
+                        max_tokens: 10000,
+                        temperature: 0.2
                     })
                 });
 
